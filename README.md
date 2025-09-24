@@ -122,6 +122,6 @@ echo "[INFO] Setup concluído com sucesso."
 - Verifique targets health (status `healthy`).  
 - Em uma instância do ASG:  
   - `curl -I http://localhost/healthz.php` → deve retornar `200 OK`  
-  - `mount | grep efs` → confirmar EFS montado  
-  - `mysql -h RDS_ENDPOINT -u admin -p` → testar conexão ao RDS  
+  
+  
 
