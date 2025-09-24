@@ -8,25 +8,26 @@ requisitos: conta AWS com permissão para EC2, RDS, EFS, ELB, IAM e VPC.
 - 2 subnets públicas   
 - 4 subnets privadas 
 - EFS 
-- RDS MySQL em subnets privadas  
+- RDS MySQL em subnets privadas
+- Script no userdata para automatizar criacao das ec2
 
 2 — Passo a passo resumido
 
 2.1 Criar a VPC 
 1. Criar VPC `10.0.0.0/16`.  
 2. Criar duas subnets públicas (ex.: `10.0.1.0/24`, `10.0.2.0/24`) em AZs distintas.  
-3. Criar quatro subnets privadas (ex.: `10.0.3.0/24`…`10.0.6.0/24`).  
+3. Criar quatro subnets privadas (ex.: `10.0.3.0/24`).  
 4. Criar Internet Gateway  e associar a tabela de rota pública (`0.0.0.0/0 → IGW`).  
 5. Criar NAT Gateway nas subnets públicas e adicionar rotas `0.0.0.0/0 → NAT` nas tabelas privadas.
 
 2.2 Criar Security Groups 
 - SG-ALB: Entrada HTTP 80 (0.0.0.0/0), HTTPS 443 (0.0.0.0/0)  
-- SG-EC2: Entrada HTTP 80 (origem = SG-ALB), SSH 22 (se necessário, origem = seu IP), NFS 2049 (origem = SG-EFS). Saida: Tudo
+- SG-EC2: Entrada HTTP 80 (origem = SG-ALB), SSH 22 , NFS 2049 . Saida: Tudo
 - SG-RDS: Entrada MySQL 3306 (origem = SG-EC2)  
 - SG-EFS: Entrada NFS 2049 (origem = SG-EC2)
 
 2.3 Criar RDS 
-- Console RDS → Create database (Standard create)  
+- Console RDS → Criar banco 
 - Engine: MySQL   
 - Instance class: db.t3.micro   
 - DB name: `wordpress`   
@@ -107,7 +108,7 @@ echo "[INFO] Setup concluído com sucesso."
 - Scheme: `internet-facing`  
 - Subnets: as públicas  
 - Security group: `SG-ALB`  
-- Listener HTTP 80 → action: forward para `wp-tg` (peso 1)
+- Listener HTTP 80 → action: forward para `wp-tg` 
 
 2.9 Criar Auto Scaling Group 
 - EC2 → Auto Scaling Groups → Create  
@@ -120,7 +121,7 @@ echo "[INFO] Setup concluído com sucesso."
 # 3 — Testes e validação rápidos
 - Acesse o DNS do ALB → deve abrir WordPress.  
 - Verifique targets health (status `healthy`).  
-- Em uma instância do ASG:  `curl -I http://localhost/healthz.php` → deve retornar `200 OK`  
+- Em uma instância do ASG pelo ssh:  `curl -I http://localhost/healthz.php` → deve retornar `200 OK`  
   
   
 
