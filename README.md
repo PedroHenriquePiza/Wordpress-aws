@@ -120,8 +120,7 @@ echo "[INFO] Setup concluído com sucesso."
 # 3 — Testes e validação rápidos
 - Acesse o DNS do ALB → deve abrir WordPress.  
 - Verifique targets health (status `healthy`).  
-- Em uma instância do ASG:  
-  - `curl -I http://localhost/healthz.php` → deve retornar `200 OK`  
+- Em uma instância do ASG:  `curl -I http://localhost/healthz.php` → deve retornar `200 OK`  
   
   
 
